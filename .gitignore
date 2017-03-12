@@ -94,3 +94,6 @@ config.ini
 
 # IDE
 .idea/
+
+# local data
+data/
