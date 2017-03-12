@@ -1,0 +1,6 @@
+[DEFAULT]
+user = <username>
+password = <password>
+keyword = <keyword to look for>
+blueprint = <blueprint (optional)>
+search_directory = <path to the local copy of repo>
