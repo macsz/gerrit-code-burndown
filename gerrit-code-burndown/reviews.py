@@ -5,7 +5,7 @@ import requests
 from requests.auth import HTTPDigestAuth
 
 
-def reviews(file, debug=True):
+def reviews(file, debug=False):
     project_site = "https://review.openstack.org/changes/"
     query = "q=project:openstack/nova+file:{0}+topic:{1}".format(file, 'bp/remove-mox-pike')
     attrs = ("&o=CURRENT_REVISION&o=ALL_COMMITS&o=ALL_FILES&o=LABELS"

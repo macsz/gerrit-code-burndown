@@ -2,6 +2,8 @@ import configparser
 import glob
 import os
 
+import time
+
 import stats
 from reviews import reviews
 
@@ -17,6 +19,9 @@ def init():
 
     for (key, value) in config_parser.items(config_parser.default_section):
         config[key] = value
+
+    if not os.path.exists(config['data_directory']):
+        os.makedirs(config['data_directory'])
 
 
 def build_file_tree():
@@ -40,9 +45,14 @@ def build_file_tree():
     stats.num_matched_files = len(file_tree)
 
 
-def print_stats():
+def get_general_stats():
+    current_ts = int(time.time())
     for var in (v for v in dir(stats) if not v.startswith('_')):
-        print(var, '=', eval('stats.'+var))
+        path = os.path.join(config['data_directory'], '{0}.csv'.format(var))
+        with open(path, 'a') as file:
+            # print(var, '=', eval('stats.' + var))
+            line = '{0},{1}\n'.format(current_ts, eval('stats.' + var))
+            file.write(line)
 
 
 def print_tree():
@@ -51,8 +61,6 @@ def print_tree():
             file = get_file_repo_path(file)
             print(get_file_repo_path(file))
             reviews(file)
-            # for line in file_tree[file]:
-            #     print('{0} {1}'.format(line[0], line[1]))
 
 
 def get_file_repo_path(path):
@@ -63,5 +71,5 @@ def get_file_repo_path(path):
 if __name__ == '__main__':
     init()
     build_file_tree()
-    print_stats()
-    print_tree()
+    get_general_stats()
+    # print_tree()
