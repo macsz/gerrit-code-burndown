@@ -3,6 +3,7 @@ import glob
 import os
 
 import stats
+from reviews import reviews
 
 config = {}
 file_tree = {}
@@ -43,7 +44,24 @@ def print_stats():
     for var in (v for v in dir(stats) if not v.startswith('_')):
         print(var, '=', eval('stats.'+var))
 
+
+def print_tree():
+    for file in sorted(file_tree.keys()):
+        if 'nova/tests/unit/objects/test_instance.py' in file:
+            file = get_file_repo_path(file)
+            print(get_file_repo_path(file))
+            reviews(file)
+            # for line in file_tree[file]:
+            #     print('{0} {1}'.format(line[0], line[1]))
+
+
+def get_file_repo_path(path):
+    path = path.split('/')
+    index = path.index('nova')
+    return '/'.join(path[index+1:])
+
 if __name__ == '__main__':
     init()
     build_file_tree()
     print_stats()
+    print_tree()
