@@ -1,3 +1,4 @@
+import random
 import time
 
 files = [
@@ -38,7 +39,7 @@ files = [
     'tests/unit/virt/xenapi/test_xenapi.py',
 ]
 
-with open('data/num_all_files.csv', 'w') as f:
+with open('data/num_matched_files.csv', 'w') as f:
     ts = int(time.time())
     hr = 60*60
     records = 100
@@ -47,4 +48,17 @@ with open('data/num_all_files.csv', 'w') as f:
         cts = ts-((records-i)*hr)
         val = len(files)-int((i/(float(records))*len(files)))
         c += '{0},{1}'.format(cts, val) + '\n'
+    f.write(c)
+
+with open('data/num_matched_lines.csv', 'w') as f:
+    ts = int(time.time())
+    hr = 60*60
+    records = 1000
+    todo = 1800
+    c = ''
+    for i in range(0, records):
+        cts = ts-((records-i)*hr)
+        done = random.randint(0, int(todo/float(100)))
+        todo -= done
+        c += '{0},{1}'.format(cts, todo) + '\n'
     f.write(c)

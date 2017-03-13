@@ -7,38 +7,37 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
     <script type="text/javascript">
-        google.charts.load('current', {'packages': ['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        var cvs = [];
-
-        $(document).ready(function() {
-            "use strict";
-            $.ajax({
-                type: "GET",
-                url: "data/num_all_files.csv",
-                dataType: "text",
-                success: function(data) {
-                    processData(data);}
+        function loadCsv(url, store) {
+            $(document).ready(function () {
+                "use strict";
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: "text",
+                    success: function (data) {
+                        processData(data, store);
+                    }
+                });
             });
-        });
+        }
 
-        function processData(data) {
+        function processData(data, store) {
             cvs_data = $.csv.toArrays(data);
-            for(var index in cvs_data){
+            for (var index in cvs_data) {
                 var row = [
-                    new Date(cvs_data[index][0]*1000),
+                    new Date(cvs_data[index][0] * 1000),
                     Number(cvs_data[index][1])
                 ];
-                cvs.push(row);
+                store.push(row);
             }
         }
 
-        function drawChart() {
+        function drawCharts() {
             var data = new google.visualization.DataTable();
             data.addColumn('date', 'Date');
             data.addColumn('number', 'Number of files importing mox');
 
-            data.addRows(cvs);
+            data.addRows(input_files);
 
             var options = {
                 title: 'Nova Mox Burndown Chart',
@@ -48,13 +47,35 @@
 
             var chart = new google.visualization.AreaChart(document.getElementById('nova_mox_files'));
             chart.draw(data, options);
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', 'Number of files importing mox');
+
+            data.addRows(input_lines);
+
+            var options = {
+                title: 'Nova Mox Burndown Chart',
+                hAxis: {title: 'Date', titleTextStyle: {color: '#333'}},
+                vAxis: {minValue: 0}
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('nova_mox_lines'));
+            chart.draw(data, options);
         }
+
+        var input_files = [];
+        var input_lines = [];
+        loadCsv("data/num_matched_files.csv", input_files);
+        loadCsv("data/num_matched_lines.csv", input_lines);
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawCharts);
     </script>
 </head>
 <body>
 
 <div id="nova_mox_files" style="width: 100%; height: 500px;"></div>
-<div id="nova_mox_all" style="width: 100%; height: 500px;"></div>
+<div id="nova_mox_lines" style="width: 100%; height: 500px;"></div>
 
 </body>
 </html>
