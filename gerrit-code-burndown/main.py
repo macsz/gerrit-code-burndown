@@ -60,7 +60,7 @@ def print_tree():
         # if 'nova/tests/unit/objects/test_instance.py' in file:
         file = get_file_repo_path(file)
         print(get_file_repo_path(file))
-        reviews(file)
+        # reviews(file)
 
 
 def get_file_repo_path(path):
