@@ -57,10 +57,10 @@ def get_general_stats():
 
 def print_tree():
     for file in sorted(file_tree.keys()):
-        if 'nova/tests/unit/objects/test_instance.py' in file:
-            file = get_file_repo_path(file)
-            print(get_file_repo_path(file))
-            reviews(file)
+        # if 'nova/tests/unit/objects/test_instance.py' in file:
+        file = get_file_repo_path(file)
+        print(get_file_repo_path(file))
+        reviews(file)
 
 
 def get_file_repo_path(path):
@@ -72,4 +72,4 @@ if __name__ == '__main__':
     init()
     build_file_tree()
     get_general_stats()
-    # print_tree()
+    print_tree()
