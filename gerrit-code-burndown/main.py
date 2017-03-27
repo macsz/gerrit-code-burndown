@@ -4,6 +4,8 @@ import os
 
 import time
 
+import datetime
+
 import stats
 from reviews import reviews
 
@@ -53,6 +55,7 @@ def get_general_stats():
             # print(var, '=', eval('stats.' + var))
             line = '{0},{1}\n'.format(current_ts, eval('stats.' + var))
             file.write(line)
+        zip_data(path)
 
 
 def print_tree():
@@ -68,8 +71,52 @@ def get_file_repo_path(path):
     index = path.index('nova')
     return '/'.join(path[index+1:])
 
+
+def zip_data(path):
+    class Data(object):
+        time_start = 9999999999
+        time_end = 0
+        value = 0
+        num = 0
+
+        def change_dates(self, date):
+            if date < self.time_start:
+                self.time_start = date
+            if date > self.time_end:
+                self.time_end = date
+
+        def __str__(self):
+            return '{0}: {1}-{2}'.format(
+                self.value,
+                datetime.datetime.fromtimestamp(self.time_start).strftime(
+                    '%Y-%m-%d %H:%M:%S'),
+                datetime.datetime.fromtimestamp(self.time_end).strftime(
+                    '%Y-%m-%d %H:%M:%S'),)
+
+    timeline = {}
+    with open(path, 'r') as f:
+        for line in f:
+            line = line.split(',')
+            t = int(line[0])
+            v = int(line[1])
+
+            if v not in timeline.keys():
+                timeline[v] = Data()
+                timeline[v].value = v
+            timeline[v].change_dates(t)
+    zip_file = path.split('.')
+    zip_file[-2] = zip_file[-2] + '_zip'
+    zip_file = '.'.join(zip_file)
+    with open(zip_file, 'w') as f:
+        for t in timeline:
+            f.write('{0},{1}\n'.format(timeline[t].time_start,
+                                       timeline[t].value))
+            f.write('{0},{1}\n'.format(timeline[t].time_end,
+                                       timeline[t].value))
+
 if __name__ == '__main__':
     init()
     build_file_tree()
     get_general_stats()
     print_tree()
+    zip_data('data/num_matched_files.csv')

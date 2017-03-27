@@ -66,8 +66,10 @@
 
         var input_files = [];
         var input_lines = [];
-        loadCsv("data/num_matched_files.csv", input_files);
-        loadCsv("data/num_matched_lines.csv", input_lines);
+        loadCsv("http://localhost:8000/data/num_matched_files_zip.csv",
+            input_files);
+        loadCsv("http://localhost:8000/data/num_matched_lines_zip.csv",
+            input_lines);
         google.charts.load('current', {'packages': ['corechart']});
         google.charts.setOnLoadCallback(drawCharts);
     </script>
